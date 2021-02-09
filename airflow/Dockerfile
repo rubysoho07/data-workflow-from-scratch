@@ -18,5 +18,4 @@ RUN pip install -q psycopg2-binary
 # Copy Airflow configuration
 COPY airflow.cfg /airflow
 
-# Export 8080 port for airflow webserver
-EXPOSE 8080
+VOLUME [ "/dags" ]
