@@ -1,0 +1,97 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: airflow-webserver
+  labels:
+    app: airflow-webserver
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: 8080
+      name: airflow-web
+  selector:
+    app: airflow-webserver
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: airflow-webserver
+  labels:
+    app: airflow-webserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: airflow-webserver
+  template:
+    metadata:
+      labels:
+        app: airflow-webserver
+    spec:
+      containers:
+        - name: airflow-webserver
+          image: "hahafree12/dwfs-airflow"
+          ports:
+            - containerPort: 8080
+              name: airflow-webserver-port
+          env:
+            - name: AIRFLOW__CORE__SQL_ALCHEMY_CONN
+              valueFrom:
+                secretKeyRef:
+                  name: airflow-secrets
+                  key: database_url
+          command: ["airflow"]
+          args: ["webserver"]
+          volumeMounts:
+            - mountPath: "/dags"
+              name: airflow-dags
+      volumes:
+        - name: airflow-dags
+          PersistentVolumeClaim:
+            claimName: airflow-dags
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: airflow-scheduler
+  labels:
+    app: airflow-scheduler
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: airflow-scheduler
+  template:
+    metadata:
+      labels:
+        app: airflow-scheduler
+    spec:
+      containers:
+        - name: airflow-scheduler
+          image: "hahafree12/dwfs-airflow"
+          env:
+            - name: AIRFLOW__CORE__SQL_ALCHEMY_CONN
+              valueFrom:
+                secretKeyRef:
+                  name: airflow-secrets
+                  key: database_url
+          command: ["airflow"]
+          args: ["scheduler"]
+          volumeMounts:
+            - mountPath: "/dags"
+              name: airflow-dags
+      volumes:
+        - name: airflow-dags
+          PersistentVolumeClaim:
+            claimName: airflow-dags
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: airflow-dags
+spec:
+  accessModes: ["ReadWriteMany"]
+  resources:
+    requests:
+      storage: 10Gi
