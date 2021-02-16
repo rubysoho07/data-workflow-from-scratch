@@ -59,6 +59,30 @@ dwfs-airflow airflow scheduler
 docker stop airflow-web airflow-scheduler
 ```
 
+## Helm으로 Kubernetes에 배포하기
+
+```shell
+helm install --set database_url=mysql+pymysql://(username):(password)\@(Database Address)/(Database) airflow-test .
+```
+
+### NFS를 DAG 저장소로 사용하는 경우
+
+```shell
+helm install --set database_url=mysql+pymysql://(username):(password)\@(Database Address)/(Database) \
+--set cluster_config.use_nfs=true \
+--set nfs.server=(NFS 서버 주소) \
+--set nfs.path=(NFS 서버 내 경로) \
+yg-airflow .
+```
+
+### 삭제할 때
+
+삭제할 때는 다음과 같이 입력합니다. 
+
+```shell
+helm uninstall airflow-test
+```
+
 ## Apache Airflow
 
 
