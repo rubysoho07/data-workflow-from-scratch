@@ -34,7 +34,7 @@ spec:
           image: "hahafree12/dwfs-airflow"
           ports:
             - containerPort: 8080
-              name: airflow-webserver-port
+              name: airflow-web
           env:
             - name: AIRFLOW__CORE__SQL_ALCHEMY_CONN
               valueFrom:
@@ -48,7 +48,7 @@ spec:
               name: airflow-dags
       volumes:
         - name: airflow-dags
-          PersistentVolumeClaim:
+          persistentVolumeClaim:
             claimName: airflow-dags
 ---
 apiVersion: apps/v1
@@ -83,7 +83,7 @@ spec:
               name: airflow-dags
       volumes:
         - name: airflow-dags
-          PersistentVolumeClaim:
+          persistentVolumeClaim:
             claimName: airflow-dags
 ---
 apiVersion: v1
