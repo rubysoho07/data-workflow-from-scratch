@@ -91,7 +91,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: airflow-dags
 spec:
-  accessModes: ["ReadWriteMany"]
+  accessModes: ["ReadWriteOnce"]
   resources:
     requests:
       storage: 10Gi
