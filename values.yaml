@@ -1,0 +1,2 @@
+cluster_config:
+  use_nfs: false

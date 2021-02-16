@@ -86,12 +86,32 @@ spec:
           persistentVolumeClaim:
             claimName: airflow-dags
 ---
+{{ if eq .Values.cluster_config.use_nfs true }}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs-dags
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes: ["ReadWriteMany"]
+  nfs:
+    server: {{ .Values.nfs.server }}
+    path: {{ .Values.nfs.path | quote }}
+---
+{{ end }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: airflow-dags
 spec:
+  {{- if eq .Values.cluster_config.use_nfs true }}
+  accessModes: ["ReadWriteMany"]
+  # To avoid using default storage class for block storage
+  storageClassName: ""
+  {{- else }}
   accessModes: ["ReadWriteOnce"]
+  {{- end }}
   resources:
     requests:
       storage: 10Gi
