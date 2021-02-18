@@ -9,6 +9,8 @@ from airflow.operators.bash import BashOperator
 
 
 # Arguments will be passed on to each operator
+# BaseOperator's parameter reference:
+# http://airflow.apache.org/docs/apache-airflow/stable/_api/airflow/models/index.html#airflow.models.BaseOperator
 default_args = {
     'owner': 'airflow',
     'depends_on_past': False,
@@ -35,9 +37,12 @@ t1 = BashOperator(
     dag=dag
 )
 
+template_command = 'echo "{{ params.message }}"'
+
 t2 = BashOperator(
     task_id='print_message',
-    bash_command='echo "This is test."',
+    bash_command=template_command,
+    params={ "message": "This is test."},
     dag=dag
 )
 
