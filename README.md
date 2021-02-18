@@ -89,11 +89,41 @@ helm uninstall airflow-test
 
 ### DAG 생성하기
 
+`dags/first_dags.py` 파일을 생성하고 dags_folder에 지정한 폴더에 넣습니다. 
 
+자세한 내용은 [Airflow의 Tutorial](http://airflow.apache.org/docs/apache-airflow/stable/tutorial.html) 문서를 참고합니다.
 
-### 작업 순서 정하기
+#### Task를 테스트 하기
 
+Airflow를 실행 중인 컨테이너에 들어가서 다음 명령을 실행합니다. 
 
+```shell
+airflow tasks test (DAG ID) (TASK ID) (날짜 - 'YYYY-MM-DD' 형식) 
+
+# Example
+airflow tasks test yungon_first print_date 2020-02-18
+```
+
+그러면 다음과 같이 output이 출력됨을 볼 수 있습니다.
+```
+... (앞부분 생략)
+[2021-02-18 10:47:49,186] {bash.py:169} INFO - Output:
+[2021-02-18 10:47:49,188] {bash.py:173} INFO - This is test.
+... (뒷부분 생략)
+```
+
+#### DAG 실행을 테스트 하기
+
+DAG 실행을 테스트하고 싶은 경우, Airflow를 실행 중인 컨테이너에서 다음 명령을 실행합니다. 
+
+```shell
+airflow dags test (DAG ID) (날짜 - 'YYYY-MM-DD' 형식)
+
+# Example
+airflow dags test yungon_first 2020-02-18
+```
+
+여기서는 각 작업의 output을 확인할 수 없고, 각 task의 성공 여부만 확인할 수 있습니다.
 
 ### 작업 예약하기
 
@@ -116,3 +146,4 @@ helm uninstall airflow-test
 * [Airflow Documentation](http://airflow.apache.org/docs/apache-airflow/stable/index.html)
     * [Set Up A Database Backend](http://airflow.apache.org/docs/apache-airflow/stable/howto/set-up-database.html)
     * [Command Line Interface and Environment Variables Reference](http://airflow.apache.org/docs/apache-airflow/stable/cli-and-env-variables-ref.html)
+    * [Tutorial](http://airflow.apache.org/docs/apache-airflow/stable/tutorial.html)
