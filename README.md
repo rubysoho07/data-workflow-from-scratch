@@ -36,7 +36,7 @@ exit
 먼저 웹서버를 실행합니다. 
 
 ```shell
-docker run --rm -d -v $PWD/dags:/dags \
+docker run --rm -d -v $PWD/dags:/dags -v $PWD/logs:/airflow/logs \
 -e AIRFLOW__CORE__SQL_ALCHEMY_CONN=mysql+pymysql://(username):(password)\@(Database Address)/(Database) \
 -p 8080:8080 --name airflow-web \
 dwfs-airflow airflow webserver
@@ -45,7 +45,7 @@ dwfs-airflow airflow webserver
 그리고 스케줄러를 실행합니다. 
 
 ```shell
-docker run --rm -d -v $PWD/dags:/dags \
+docker run --rm -d -v $PWD/dags:/dags -v $PWD/logs:/airflow/logs \
 -e AIRFLOW__CORE__SQL_ALCHEMY_CONN=mysql+pymysql://(username):(password)\@(Database Address)/(Database) \
 --name airflow-scheduler \
 dwfs-airflow airflow scheduler
