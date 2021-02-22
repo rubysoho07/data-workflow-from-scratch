@@ -14,4 +14,6 @@ COPY airflow.cfg /airflow
 
 VOLUME [ "/dags" ]
 
+VOLUME [ "/airflow/logs" ]
+
 CMD echo "Airflow Container Started!"

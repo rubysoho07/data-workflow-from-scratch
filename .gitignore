@@ -1,5 +1,8 @@
 # Temporary MySQL Data
 data/
 
+# Temporary log data
+logs/
+
 # Python related files
 __pycache__/
