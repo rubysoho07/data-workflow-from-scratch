@@ -65,13 +65,13 @@ docker stop airflow-web airflow-scheduler
 helm install --set database_url=mysql+pymysql://(username):(password)\@(Database Address)/(Database) airflow-test .
 ```
 
-### NFS를 DAG 저장소로 사용하는 경우
+### NFS를 DAGs/Log 저장소로 사용하는 경우
 
 ```shell
 helm install --set database_url=mysql+pymysql://(username):(password)\@(Database Address)/(Database) \
 --set cluster_config.use_nfs=true \
---set nfs.server=(NFS 서버 주소) \
---set nfs.path=(NFS 서버 내 경로) \
+--set nfs.dags_server=(NFS 서버 주소) --set nfs.dags_path=(NFS 서버 내 경로) \
+--set nfs.logs_server=(NFS 서버 주소) --set nfs.logs_path=(NFS 서버 내 경로) \
 yg-airflow .
 ```
 
