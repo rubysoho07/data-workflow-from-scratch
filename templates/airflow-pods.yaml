@@ -81,10 +81,15 @@ spec:
           volumeMounts:
             - mountPath: "/dags"
               name: airflow-dags
+            - mountPath: "/airflow/logs"
+              name: airflow-logs
       volumes:
         - name: airflow-dags
           persistentVolumeClaim:
             claimName: airflow-dags
+        - name: airflow-logs
+          persistentVolumeClaim:
+            claimName: airflow-logs
 ---
 {{ if eq .Values.cluster_config.use_nfs true }}
 apiVersion: v1
@@ -96,14 +101,42 @@ spec:
     storage: 10Gi
   accessModes: ["ReadWriteMany"]
   nfs:
-    server: {{ .Values.nfs.server }}
-    path: {{ .Values.nfs.path | quote }}
+    server: {{ .Values.nfs.dags_server }}
+    path: {{ .Values.nfs.dags_path | quote }}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs-logs
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes: ["ReadWriteMany"]
+  nfs:
+    server: {{ .Values.nfs.logs_server }}
+    path: {{ .Values.nfs.logs_path | quote }}
 ---
 {{ end }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: airflow-dags
+spec:
+  {{- if eq .Values.cluster_config.use_nfs true }}
+  accessModes: ["ReadWriteMany"]
+  # To avoid using default storage class for block storage
+  storageClassName: ""
+  {{- else }}
+  accessModes: ["ReadWriteOnce"]
+  {{- end }}
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: airflow-logs
 spec:
   {{- if eq .Values.cluster_config.use_nfs true }}
   accessModes: ["ReadWriteMany"]
