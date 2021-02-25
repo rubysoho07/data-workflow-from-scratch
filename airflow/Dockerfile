@@ -10,7 +10,7 @@ RUN apt-get update -qq && apt-get -y upgrade -qq && \
     pip install -q apache-airflow pymysql psycopg2-binary
 
 # Copy Airflow configuration
-COPY airflow.cfg /airflow
+COPY airflow.cfg kubernetes_pod_template.yaml /airflow/
 
 VOLUME [ "/dags" ]
 

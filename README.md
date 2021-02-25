@@ -7,6 +7,9 @@
 ```shell
 cd airflow
 docker build -t dwfs-airflow .
+docker login
+docker tag dwfs-airflow hahafree12/dwfs-airflow
+docker push hahafree12/dwfs-airflow
 ```
 
 ### 로컬에서 DB 설정
