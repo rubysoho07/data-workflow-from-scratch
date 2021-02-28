@@ -114,6 +114,8 @@ spec:
                   key: database_url
             - name: AIRFLOW__CORE__EXECUTOR
               value: {{ .Values.airflow_config.executor }}
+            - name: AIRFLOW__KUBERNETES__DELETE_WORKER_PODS
+              value: {{ .Values.airflow_config.kubernetes.delete_worker_pods | quote }}
           command: ["airflow"]
           args: ["scheduler"]
           volumeMounts:

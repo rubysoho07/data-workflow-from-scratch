@@ -3,3 +3,5 @@ cluster_config:
 
 airflow_config:
   executor: LocalExecutor
+  kubernetes:
+    delete_worker_pods: "True"
