@@ -7,7 +7,9 @@ ENV AIRFLOW_HOME=/airflow
 
 # Install Airflow
 RUN apt-get update -qq && apt-get -y upgrade -qq && \
-    pip install -q apache-airflow pymysql psycopg2-binary
+    apt-get install -y -qq default-libmysqlclient-dev gcc && \
+    pip install -q --upgrade pip && \
+    pip install -q 'apache-airflow[mysql,postgres,cncf.kubernetes]'
 
 # Copy Airflow configuration
 COPY airflow.cfg kubernetes_pod_template.yaml /airflow/
