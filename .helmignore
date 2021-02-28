@@ -1,0 +1,5 @@
+# Files & directories for test on local environment
+dags/
+logs/
+data/
+plugins/
