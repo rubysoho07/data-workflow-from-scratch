@@ -16,7 +16,7 @@ spec:
               name: airflow-secrets
               key: database_url
       envFrom: []
-      image: dummy_image
+      image: hahafree12/dwfs-airflow:latest
       imagePullPolicy: IfNotPresent
       name: base
       ports: []
