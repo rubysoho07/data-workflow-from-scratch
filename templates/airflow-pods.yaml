@@ -41,15 +41,22 @@ spec:
                 secretKeyRef:
                   name: airflow-secrets
                   key: database_url
+            - name: AIRFLOW__CORE__EXECUTOR
+              value: {{ .Values.airflow_config.executor }}
           command: ["airflow"]
           args: ["webserver"]
           volumeMounts:
             - mountPath: "/dags"
               name: airflow-dags
+            - mountPath: "/airflow/logs"
+              name: airflow-logs
       volumes:
         - name: airflow-dags
           persistentVolumeClaim:
             claimName: airflow-dags
+        - name: airflow-logs
+          persistentVolumeClaim:
+            claimName: airflow-logs
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -76,6 +83,8 @@ spec:
                 secretKeyRef:
                   name: airflow-secrets
                   key: database_url
+            - name: AIRFLOW__CORE__EXECUTOR
+              value: {{ .Values.airflow_config.executor }}
           command: ["airflow"]
           args: ["scheduler"]
           volumeMounts:
