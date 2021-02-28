@@ -18,7 +18,7 @@ docker push hahafree12/dwfs-airflow
 
 ```shell
 docker run --rm -it -v $PWD/dags:/dags \ 
--e AIRFLOW__CORE__SQL_ALCHEMY_CONN=mysql+pymysql://(username):(password)\@(Database Address)/(Database) dwfs-airflow bash
+-e AIRFLOW__CORE__SQL_ALCHEMY_CONN=mysql://(username):(password)\@(Database Address)/(Database) dwfs-airflow bash
 
 # 여기서부터는 컨테이너에서 실행합니다. 
 airflow db init
@@ -40,7 +40,7 @@ exit
 
 ```shell
 docker run --rm -d -v $PWD/dags:/dags -v $PWD/logs:/airflow/logs \
--e AIRFLOW__CORE__SQL_ALCHEMY_CONN=mysql+pymysql://(username):(password)\@(Database Address)/(Database) \
+-e AIRFLOW__CORE__SQL_ALCHEMY_CONN=mysql://(username):(password)\@(Database Address)/(Database) \
 -p 8080:8080 --name airflow-web \
 dwfs-airflow airflow webserver
 ```
@@ -49,7 +49,7 @@ dwfs-airflow airflow webserver
 
 ```shell
 docker run --rm -d -v $PWD/dags:/dags -v $PWD/logs:/airflow/logs \
--e AIRFLOW__CORE__SQL_ALCHEMY_CONN=mysql+pymysql://(username):(password)\@(Database Address)/(Database) \
+-e AIRFLOW__CORE__SQL_ALCHEMY_CONN=mysql://(username):(password)\@(Database Address)/(Database) \
 --name airflow-scheduler \
 dwfs-airflow airflow scheduler
 ```
@@ -65,13 +65,13 @@ docker stop airflow-web airflow-scheduler
 ## Helm으로 Kubernetes에 배포하기
 
 ```shell
-helm install --set database_url=mysql+pymysql://(username):(password)\@(Database Address)/(Database) airflow-test .
+helm install --set database_url=mysql://(username):(password)\@(Database Address)/(Database) airflow-test .
 ```
 
 ### NFS를 DAGs/Log 저장소로 사용하는 경우
 
 ```shell
-helm install --set database_url=mysql+pymysql://(username):(password)\@(Database Address)/(Database) \
+helm install --set database_url=mysql://(username):(password)\@(Database Address)/(Database) \
 --set cluster_config.use_nfs=true \
 --set nfs.dags_server=(NFS 서버 주소) --set nfs.dags_path=(NFS 서버 내 경로) \
 --set nfs.logs_server=(NFS 서버 주소) --set nfs.logs_path=(NFS 서버 내 경로) \
@@ -125,8 +125,6 @@ airflow dags test (DAG ID) (날짜 - 'YYYY-MM-DD' 형식)
 # Example
 airflow dags test yungon_first 2020-02-18
 ```
-
-여기서는 각 작업의 output을 확인할 수 없고, 각 task의 성공 여부만 확인할 수 있습니다.
 
 ### 작업 예약하기
 
