@@ -1,4 +1,31 @@
 apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: airflow-executor
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: airflow-executor-role
+rules:
+  - apiGroups: [""]
+    resources: ["pods", "namespaces"]
+    verbs: ["get", "watch", "list", "create", "update", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: airflow-executor
+roleRef:
+  kind: ClusterRole
+  name: airflow-executor-role
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+  - kind: ServiceAccount
+    name: airflow-executor
+    namespace: default
+---
+apiVersion: v1
 kind: Service
 metadata:
   name: airflow-webserver
@@ -74,6 +101,8 @@ spec:
       labels:
         app: airflow-scheduler
     spec:
+      serviceAccount: airflow-executor
+      serviceAccountName: airflow-executor
       containers:
         - name: airflow-scheduler
           image: "hahafree12/dwfs-airflow"
