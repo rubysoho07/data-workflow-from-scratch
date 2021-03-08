@@ -131,32 +131,48 @@ spec:
           persistentVolumeClaim:
             claimName: airflow-logs
 ---
-{{ if eq .Values.cluster_config.use_nfs true }}
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: nfs-dags
+  name: airflow-dags-pv
 spec:
   capacity:
     storage: 10Gi
+  {{- if eq .Values.cluster_config.use_nfs true }}
   accessModes: ["ReadWriteMany"]
   nfs:
     server: {{ .Values.nfs.dags_server }}
     path: {{ .Values.nfs.dags_path | quote }}
+  {{- else }}
+  accessModes: ["ReadWriteOnce"]
+  {{- if eq .Values.cluster_config.local_test true }}
+  storageClassName: standard
+  hostPath:
+    path: "/data/airflow-dags"
+  {{- end }}
+  {{- end }}
 ---
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: nfs-logs
+  name: airflow-logs-pv
 spec:
   capacity:
     storage: 10Gi
+  {{- if eq .Values.cluster_config.use_nfs true }}
   accessModes: ["ReadWriteMany"]
   nfs:
     server: {{ .Values.nfs.logs_server }}
     path: {{ .Values.nfs.logs_path | quote }}
+  {{- else }}
+  accessModes: ["ReadWriteOnce"]
+  {{- if eq .Values.cluster_config.local_test true }}
+  storageClassName: standard
+  hostPath:
+    path: "/data/airflow-logs"
+  {{- end }}
+  {{- end }}
 ---
-{{ end }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -168,6 +184,9 @@ spec:
   storageClassName: ""
   {{- else }}
   accessModes: ["ReadWriteOnce"]
+  {{- if eq .Values.cluster_config.local_test true }}
+  storageClassName: standard
+  {{- end }}
   {{- end }}
   resources:
     requests:
@@ -184,6 +203,9 @@ spec:
   storageClassName: ""
   {{- else }}
   accessModes: ["ReadWriteOnce"]
+  {{- if eq .Values.cluster_config.local_test true }}
+  storageClassName: standard
+  {{- end }}
   {{- end }}
   resources:
     requests:

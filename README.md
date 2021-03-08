@@ -68,6 +68,30 @@ docker stop airflow-web airflow-scheduler
 helm install --set database_url=mysql://(username):(password)\@(Database Address)/(Database) airflow-test .
 ```
 
+### minikube로 테스트 하는 경우
+
+로컬 디렉터리를 minikube 클러스터에 바로 마운트 할 수 없으므로 사전 작업이 필요합니다. 
+
+터미널 창을 켜고 다음과 같이 입력합니다.
+
+```shell
+minikube mount $PWD/dags:/data/airflow-dags
+```
+
+다른 터미널 창을 켜고 다음과 같이 입력합니다. 
+
+```shell
+minikube mount $PWD/logs:/data/airflow-log
+```
+
+이들 프로세스는 로컬 환경에서 테스트 하는 동안 계속 켜져 있어야 합니다. 
+
+그리고 다른 터미널 창에서 Helm Chart를 시작합니다. 
+
+```shell
+helm install --set database_url=mysql://(username):(password)\@(Database Address)/(Database) --set cluster_config.local_test=true airflow-test .
+```
+
 ### NFS를 DAGs/Log 저장소로 사용하는 경우
 
 ```shell
