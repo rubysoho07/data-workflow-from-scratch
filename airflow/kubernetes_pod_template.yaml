@@ -28,8 +28,6 @@ spec:
           readOnly: true
   hostNetwork: false
   restartPolicy: Never
-  securityContext:
-    runAsUser: 50000
   nodeSelector:
     {}
   affinity:
