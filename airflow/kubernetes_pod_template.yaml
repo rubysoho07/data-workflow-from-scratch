@@ -15,6 +15,26 @@ spec:
             secretKeyRef:
               name: airflow-secrets
               key: database_url
+        - name: AIRFLOW__LOGGING__REMOTE__LOGGING
+          valueFrom:
+            configMapKeyRef:
+              name: airflow-remote-logging-config
+              key: remote_logging_enabled
+        - name: AIRFLOW__LOGGING__REMOTE_LOG_CONN_ID
+          valueFrom:
+            configMapKeyRef:
+              name: airflow-remote-logging-config
+              key: conn_id
+        - name: AIRFLOW__LOGGING__REMOTE_BASE_LOG_FOLDER
+          valueFrom:
+            configMapKeyRef:
+              name: airflow-remote-logging-config
+              key: remote_base_log_folder
+        - name: AIRFLOW_CONN_AWS_DEFAULT
+          valueFrom:
+            secretKeyRef:
+              name: airflow-secrets
+              key: aws_conn_uri
       envFrom: []
       image: hahafree12/dwfs-airflow:latest
       imagePullPolicy: IfNotPresent

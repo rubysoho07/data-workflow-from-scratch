@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: airflow-remote-logging-config
+data:
+  remote_logging_enabled: {{ .Values.airflow_config.remote_logging.enabled | quote }}
+  conn_id: {{ .Values.airflow_config.remote_logging.conn_id }}
+  remote_base_log_folder: {{ .Values.airflow_config.remote_logging.remote_base_log_folder }}

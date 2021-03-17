@@ -70,6 +70,26 @@ spec:
                   key: database_url
             - name: AIRFLOW__CORE__EXECUTOR
               value: {{ .Values.airflow_config.executor }}
+            - name: AIRFLOW__LOGGING__REMOTE__LOGGING
+              valueFrom:
+                configMapKeyRef:
+                  name: airflow-remote-logging-config
+                  key: remote_logging_enabled
+            - name: AIRFLOW__LOGGING__REMOTE_LOG_CONN_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: airflow-remote-logging-config
+                  key: conn_id
+            - name: AIRFLOW__LOGGING__REMOTE_BASE_LOG_FOLDER
+              valueFrom:
+                configMapKeyRef:
+                  name: airflow-remote-logging-config
+                  key: remote_base_log_folder
+            - name: AIRFLOW_CONN_AWS_DEFAULT
+              valueFrom:
+                secretKeyRef:
+                  name: airflow-secrets
+                  key: aws_conn_uri
           command: ["airflow"]
           args: ["webserver"]
           volumeMounts:
@@ -116,6 +136,26 @@ spec:
               value: {{ .Values.airflow_config.executor }}
             - name: AIRFLOW__KUBERNETES__DELETE_WORKER_PODS
               value: {{ .Values.airflow_config.kubernetes.delete_worker_pods | quote }}
+            - name: AIRFLOW__LOGGING__REMOTE__LOGGING
+              valueFrom:
+                configMapKeyRef:
+                  name: airflow-remote-logging-config
+                  key: remote_logging_enabled
+            - name: AIRFLOW__LOGGING__REMOTE_LOG_CONN_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: airflow-remote-logging-config
+                  key: conn_id
+            - name: AIRFLOW__LOGGING__REMOTE_BASE_LOG_FOLDER
+              valueFrom:
+                configMapKeyRef:
+                  name: airflow-remote-logging-config
+                  key: remote_base_log_folder
+            - name: AIRFLOW_CONN_AWS_DEFAULT
+              valueFrom:
+                secretKeyRef:
+                  name: airflow-secrets
+                  key: aws_conn_uri
           command: ["airflow"]
           args: ["scheduler"]
           volumeMounts:

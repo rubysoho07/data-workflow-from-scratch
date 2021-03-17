@@ -5,3 +5,8 @@ airflow_config:
   executor: LocalExecutor
   kubernetes:
     delete_worker_pods: "True"
+  remote_logging:
+    enabled: "False"
+    conn_id: aws_default
+    remote_base_log_folder: ""
+    conn_id_uri: ""
