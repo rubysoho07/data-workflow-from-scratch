@@ -191,6 +191,9 @@ spec:
     path: "/data/airflow-dags"
   {{- end }}
   {{- end }}
+  claimRef:
+    name: airflow-dags
+    namespace: default
 ---
 apiVersion: v1
 kind: PersistentVolume
@@ -212,6 +215,9 @@ spec:
     path: "/data/airflow-logs"
   {{- end }}
   {{- end }}
+  claimRef:
+    name: airflow-logs
+    namespace: default
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
