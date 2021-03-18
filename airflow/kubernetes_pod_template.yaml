@@ -15,7 +15,7 @@ spec:
             secretKeyRef:
               name: airflow-secrets
               key: database_url
-        - name: AIRFLOW__LOGGING__REMOTE__LOGGING
+        - name: AIRFLOW__LOGGING__REMOTE_LOGGING
           valueFrom:
             configMapKeyRef:
               name: airflow-remote-logging-config
