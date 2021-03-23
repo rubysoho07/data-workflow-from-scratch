@@ -81,7 +81,7 @@ minikube mount $PWD/dags:/data/airflow-dags
 다른 터미널 창을 켜고 다음과 같이 입력합니다. 
 
 ```shell
-minikube mount $PWD/logs:/data/airflow-log
+minikube mount $PWD/logs:/data/airflow-logs
 ```
 
 이들 프로세스는 로컬 환경에서 테스트 하는 동안 계속 켜져 있어야 합니다. 
