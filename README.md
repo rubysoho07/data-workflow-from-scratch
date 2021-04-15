@@ -112,6 +112,38 @@ helm uninstall airflow-test
 
 ## Apache Airflow
 
+### 로그를 S3에 저장하기 위한 과정
+
+먼저 아래 스크립트를 활용하여 Connection URI를 생성합니다. 
+
+```python
+import json
+
+from airflow.models.connection import Connection
+
+c = Connection(
+    conn_id='s3_log_default',
+    conn_type='s3',
+    host='s3-bucket-name',
+    extra=json.dumps({
+        "aws_access_key_id": "your aws access key",
+        "aws_secret_access_key": "your aws secret access key"
+    })
+)
+
+print(c.get_uri())
+```
+
+이 결과를 하나의 변수로 구성한 뒤, 다음과 같이 Helm Chart를 설치합니다. 아래 예제에서는 PostgreSQL을 메타데이터 DB로 사용하였습니다. 
+
+```shell
+AWS_CONN_URI="(위의 스크립트를 실행한 결과)"
+
+helm install --set database_url=postgresql+psycopg2://(username):(password)\@(Database Address)/(Database) --set cluster_config.local_test=true \
+--set airflow_config.remote_logging.enabled="True" --set airflow_config.remote_logging.conn_id=s3_log_default --set airflow_config.remote_logging.remote_base_log_folder="s3://s3_bucket_name" \
+--set airflow_config.remote_logging.conn_id_uri=$AWS_CONN_URI \
+--set airflow_config.executor=KubernetesExecutor airflow-test .
+```
 
 
 ### DAG 생성하기

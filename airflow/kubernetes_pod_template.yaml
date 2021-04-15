@@ -30,11 +30,11 @@ spec:
             configMapKeyRef:
               name: airflow-remote-logging-config
               key: remote_base_log_folder
-        - name: AIRFLOW_CONN_AWS_DEFAULT
+        - name: AIRFLOW_CONN_S3_LOG_DEFAULT
           valueFrom:
             secretKeyRef:
               name: airflow-secrets
-              key: aws_conn_uri
+              key: s3_log_conn_uri
       envFrom: []
       image: hahafree12/dwfs-airflow:latest
       imagePullPolicy: IfNotPresent
