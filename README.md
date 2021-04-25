@@ -188,7 +188,49 @@ airflow dags test yungon_first 2020-02-18
 
 ### 외부 DB 연결하기
 
+외부 DB(MySQL, PostgreSQL, ...)에 연결하려면, Connection ID를 적절히 생성해 줍니다. 
 
+Connection ID는 CLI로 생성하는 방법이나 웹서버에서 생성하는 방법이 있습니다. 
+
+자세한 내용은 [Airflow의 문서](https://airflow.apache.org/docs/apache-airflow/stable/howto/connection.html)를 참고하여 생성합니다. 
+
+DB에서 바로 쿼리해서 결과를 넣을 경우, 다음과 같이 수행하면 됩니다. 아례 예제는 PostgreSQL에서 쿼리를 수행할 때의 예제입니다.
+
+```python
+from airflow.providers.postgres.operators.postgres import PostgresOperator
+
+task_1 = PostgresOperator(
+    task_id='your_task_id',
+    postgres_conn_id='Your Connection ID',
+    sql="""SQL Query""",
+    dag=dag
+)
+```
+
+하지만 DB 쿼리 결과를 이용해서 다른 작업을 해야 할 경우가 있습니다. 이 때는 [Hook](https://airflow.apache.org/docs/apache-airflow/stable/concepts.html#hooks)을 이용해서 DB에 연결 후 쿼리를 수행합니다. 
+
+```python
+from airflow.operators.python_operator import PythonOperator
+from airflow.providers.postgres.hooks.postgres import PostgresHook
+
+def task_test_query():
+    hook = PostgresHook(postgres_conn_id='yungon_postgres_test')
+
+    rows = hook.get_records("SELECT * FROM scheduler_core_movieschedule LIMIT 10;")
+
+    for row in rows:
+        print(row)
+
+task_2 = PythonOperator(
+    task_id='run_query_with_python',
+    python_callable=task_test_query,
+    dag=dag
+)
+```
+
+DbApiHook 클래스를 상속하는 Hook들은 공통 기능들을 가지고 있습니다. Connection을 가져오거나, 쿼리를 수행하거나, 쿼리 수행 결과를 Pandas의 DataFrame으로 가져오는 등의 기능들을 지원합니다. MySqlHook이나, PostgresHook 등이 대표적인 사례입니다. 
+
+DbApiHook 클래스가 제공하는 기본 기능은 [이 문서](https://airflow.apache.org/docs/apache-airflow/stable/_api/airflow/hooks/dbapi/index.html)를 참고하세요. 
 
 ### 앞의 실행 결과를 뒤에서 사용하기
 
