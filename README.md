@@ -184,7 +184,26 @@ airflow dags test yungon_first 2020-02-18
 
 ### 작업 예약하기
 
+DAG을 설정할 때, `schedule_interval` 속성을 설정하여 작업을 예약할 수 있습니다. 
 
+예시)
+
+```python
+dag = DAG(
+    'dag_id',
+    # ...
+    schedule_interval=timedelta(days=1),
+    # ...
+)
+```
+
+`schedule_interval` 속성에 들어갈 수 있는 값들은 다음과 같습니다.
+
+* Cron expression을 문자열로 넘겨줌
+* `datetime.timedelta` object를 넘겨줌
+* Cron preset 중 하나를 지정하여 문자열로 넘겨줌: (None, '@once', '@hourly', ...)
+
+자세한 내용은 [DAG Runs](https://airflow.apache.org/docs/apache-airflow/stable/dag-run.html) 문서를 참고하세요. 
 
 ### 외부 DB 연결하기
 
